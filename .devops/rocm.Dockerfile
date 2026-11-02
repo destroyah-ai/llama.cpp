@@ -58,6 +58,7 @@ RUN HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" \
     cmake -S . -B build \
         -DGGML_HIP=ON \
         -DAMDGPU_TARGETS="$ROCM_DOCKER_ARCH" \
+	-DLLAMA_RPC=ON \
         -DGGML_BACKEND_DL=ON -DGGML_CPU_ALL_VARIANTS=ON \
         -DCMAKE_BUILD_TYPE=Release -DLLAMA_BUILD_TESTS=OFF \
     && cmake --build build --config Release -j$(nproc)
@@ -126,7 +127,12 @@ ENTRYPOINT ["/app/tools.sh"]
 ### Light, CLI only
 FROM base AS light
 
-COPY --from=build /app/full/llama /app/full/llama-cli /app/full/llama-completion /app/
+#COPY --from=build /app/full/llama /app/full/llama-cli /app/full/llama-completion /app/
+COPY --from=build \
+  /app/full/llama \
+  /app/full/llama-server \
+  /app/full/llama-rpc-server \
+  /app/
 
 WORKDIR /app
 
