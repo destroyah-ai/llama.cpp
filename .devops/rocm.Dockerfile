@@ -131,7 +131,6 @@ ENTRYPOINT ["/app/tools.sh"]
 FROM base AS light
 
 COPY --from=build \
-  /app/full/llama \
   /app/full/llama-server \
   /app/full/ggml-rpc-server \
   /app/
